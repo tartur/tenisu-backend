@@ -3,14 +3,11 @@ locals {
   app_name    = "tenisu"
 }
 
-
 # ECR repo
 resource "aws_ecr_repository" "app" {
   name = var.project
   image_scanning_configuration { scan_on_push = true }
 }
-
-
 
 ###################################
 # Cognito User Pool

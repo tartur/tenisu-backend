@@ -22,6 +22,34 @@ resource "aws_apigatewayv2_vpc_link" "ecs_vpc_link" {
 }
 
 ###################################
+# API Gateway Custom Domain
+###################################
+
+resource "aws_apigatewayv2_domain_name" "custom" {
+  domain_name = var.domain
+  domain_name_configuration {
+    certificate_arn = aws_acm_certificate.api_domain.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+
+  depends_on = [aws_acm_certificate_validation.api_domain]
+}
+
+# Create log group
+resource "aws_cloudwatch_log_group" "apigw_access" {
+  name              = "/apigw/${local.name_prefix}/access"
+  retention_in_days = 14
+}
+
+# Base path mapping: https://<domain> -> HTTP API `<env>` stage
+resource "aws_apigatewayv2_api_mapping" "stage" {
+  api_id      = aws_apigatewayv2_api.rest_api.id
+  domain_name = aws_apigatewayv2_domain_name.custom.id
+  stage       = aws_apigatewayv2_stage.stage.id
+}
+
+###################################
 # API Gateway REST API
 ###################################
 resource "aws_apigatewayv2_api" "rest_api" {
@@ -40,6 +68,12 @@ resource "aws_apigatewayv2_integration" "ecs_integration" {
   connection_type        = "VPC_LINK"
   connection_id          = aws_apigatewayv2_vpc_link.ecs_vpc_link.id
   payload_format_version = "1.0"
+
+  # Header mappings to backend (overwrite/append semantics)
+  request_parameters = {
+    # Inject stage as X-TENISU-ENV
+    "overwrite:header.X-TENISU-ENV"    = "$context.stage"
+  }
 }
 
 ###################################
@@ -74,8 +108,27 @@ resource "aws_apigatewayv2_route" "default_route" {
 ###################################
 # API Gateway Deployment & Stage
 ###################################
-resource "aws_apigatewayv2_stage" "default_stage" {
+resource "aws_apigatewayv2_stage" "stage" {
   api_id      = aws_apigatewayv2_api.rest_api.id
   name        = var.environment
   auto_deploy = true
+
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.apigw_access.arn
+    # Common JSON format including requestId and user principal if present
+    format = jsonencode({
+      requestId       = "$context.requestId",
+      ip              = "$context.identity.sourceIp",
+      requestTime     = "$context.requestTime",
+      httpMethod      = "$context.httpMethod",
+      routeKey        = "$context.routeKey",
+      status          = "$context.status",
+      protocol        = "$context.protocol",
+      integrationStatus = "$context.integrationStatus",
+      integrationError  = "$context.integrationErrorMessage",
+      responseLength  = "$context.responseLength",
+      user            = "$context.authorizer.principalId"
+    })
+  }
 }

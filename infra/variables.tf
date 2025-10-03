@@ -12,8 +12,12 @@ variable "project" {
 }
 variable "domain" {
   type = string
-  default = "tenisu.turki4.net"
-} # used for route53/cognito domain
+  default = "dev-api.tenisu.turki4.net"
+}
+variable "root_domain" {
+  type = string
+  default = "turki4.net"
+}
 variable "tf_state_bucket" {
   type = string
 }

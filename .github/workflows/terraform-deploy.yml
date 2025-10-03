@@ -36,9 +36,15 @@ jobs:
 
       - name: Terraform Plan
         working-directory: infra
-        run: terraform plan -var="environment=${{ github.event.inputs.environment }}" -var="tf_state_bucket=${{ secrets.TF_STATE_BUCKET }}" -out=tfplan
+        run: |
+          terraform plan -var="environment=${{ github.event.inputs.environment }}" \
+          -var="tf_state_bucket=${{ secrets.TF_STATE_BUCKET }}" \
+          -var="domain=${{ github.event.inputs.environment }}-api.tenisu.turki4.net" -out=tfplan
 
       - name: Terraform Apply (manual only)
         if: github.event_name == 'workflow_dispatch'
         working-directory: infra
-        run: terraform apply -var="environment=${{ github.event.inputs.environment }}" -var="tf_state_bucket=${{ secrets.TF_STATE_BUCKET }}"  -input=false tfplan
+        run: |
+          terraform apply -var="environment=${{ github.event.inputs.environment }}" \
+          -var="tf_state_bucket=${{ secrets.TF_STATE_BUCKET }}" \
+          -var="domain=${{ github.event.inputs.environment }}-api.tenisu.turki4.net" -input=false tfplan
