@@ -9,7 +9,14 @@ on:
         default: dev
   push:
     branches:
-      - main
+      - 'main'
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'scripts/**'
+      - 'terraform/**'
+      - 'http/**'
 
 permissions:
   contents: read
