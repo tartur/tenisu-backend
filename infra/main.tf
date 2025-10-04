@@ -23,19 +23,37 @@ resource "aws_cognito_user_pool" "users" {
   }
 }
 
+# Resource Server with custom API scopes
+resource "aws_cognito_resource_server" "api" {
+  user_pool_id = aws_cognito_user_pool.users.id
+  identifier   = "tenisu-api"            # becomes the audience in tokens
+  name         = "Tenisu API"
+
+  scope {
+    scope_name        = "read"
+    scope_description = "Read access"
+  }
+  scope {
+    scope_name        = "write"
+    scope_description = "Write access"
+  }
+}
+
 resource "aws_cognito_user_pool_client" "app_client" {
   name            = "${local.name_prefix}-client"
   user_pool_id    = aws_cognito_user_pool.users.id
-  generate_secret = false
+  generate_secret = true
 
   explicit_auth_flows = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
 
   # OAuth 2.0 settings
-  allowed_oauth_flows_user_pool_client = false
-  #allowed_oauth_flows                  = ["code"]
-  #allowed_oauth_scopes = ["phone", "email", "openid", "profile", "aws.cognito.signin.user.admin"]
-  #callback_urls = ["https://dev-api.tenisu.turki4.net/callback"]  # REQUIRED
-  #logout_urls   = ["https://tenisu.turki4.net/logout"]            # REQUIRED
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["client_credentials"]
+  allowed_oauth_scopes = [
+    "${aws_cognito_resource_server.api.identifier}/read",
+    "${aws_cognito_resource_server.api.identifier}/write",
+  ]
+
 
   # Optional but good to set explicitly
   access_token_validity  = 60   # minutes
