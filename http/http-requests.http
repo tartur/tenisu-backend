@@ -8,9 +8,17 @@ grant_type=client_credentials&scope=tenisu-api/read%20tenisu-api/write
 > {%client.global.set("auth", response.body); %}
 
 
+### Info request
+GET {{base_url}}/info
+
 ### Health request
 GET {{base_url}}/health
 
+### Environment request
+GET {{base_url}}/env
+
+### Config props request
+GET {{base_url}}/configprops
 
 ### Find all players
 GET {{base_url}}/players

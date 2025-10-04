@@ -39,7 +39,7 @@ resource "aws_apigatewayv2_domain_name" "custom" {
 # Create log group
 resource "aws_cloudwatch_log_group" "apigw_access" {
   name              = "/apigw/${local.name_prefix}/access"
-  retention_in_days = 14
+  retention_in_days = 1
 }
 
 # Base path mapping: https://<domain> -> HTTP API `<env>` stage

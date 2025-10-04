@@ -64,6 +64,16 @@ resource "aws_iam_role_policy" "ecs_exec_secrets" {
   })
 }
 
+# CloudWatch Logs group for ECS app logs
+resource "aws_cloudwatch_log_group" "app" {
+  name              = "/ecs/${local.name_prefix}"
+  retention_in_days = 1
+  tags = {
+    Application = local.name_prefix
+  }
+}
+
+
 # Task Definition
 resource "aws_ecs_task_definition" "app" {
   family                   = local.name_prefix
@@ -97,6 +107,16 @@ resource "aws_ecs_task_definition" "app" {
         { name = "DB_USERNAME", valueFrom = "${aws_secretsmanager_secret.db.arn}:username::" },
         { name = "DB_PASSWORD", valueFrom = "${aws_secretsmanager_secret.db.arn}:password::" }
       ]
+
+      # send stdout/stderr to CloudWatch Logs
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.app.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 }

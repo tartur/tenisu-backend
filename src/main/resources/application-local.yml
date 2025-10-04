@@ -15,9 +15,20 @@ management:
     web:
       base-path: '/'            # puts actuator under root
       exposure:
-        include: health
+        include: 'health'
   endpoint:
     health:
       show-details: never     # do not leak component details to the public
       probes:
         enabled: true
+
+logbook:
+  predicate:
+    exclude:
+      - path: '/info'
+      - path: '/health'
+      - path: '/env'
+      - path: '/configprops'
+
+logging.level:
+  org.zalando.logbook: trace
