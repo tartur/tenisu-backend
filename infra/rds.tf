@@ -55,3 +55,45 @@ resource "aws_security_group" "db" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_iam_role" "ssm_instance" {
+  name = "${local.name_prefix}-ssm-bastion"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{ Effect = "Allow", Principal = { Service = "ec2.amazonaws.com" }, Action = "sts:AssumeRole" }]
+  })
+}
+resource "aws_iam_role_policy_attachment" "ssm_core" {
+  role       = aws_iam_role.ssm_instance.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+resource "aws_iam_instance_profile" "ssm_instance" {
+  name = aws_iam_role.ssm_instance.name
+  role = aws_iam_role.ssm_instance.name
+}
+data "aws_ami" "al2023" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+}
+
+resource "aws_instance" "bastion" {
+  ami                         = data.aws_ami.al2023.id
+  instance_type               = "t3.micro"
+  subnet_id                   = module.vpc.private_subnets[0]
+  vpc_security_group_ids      = [aws_security_group.ecs_app.id]
+  iam_instance_profile        = aws_iam_instance_profile.ssm_instance.name
+  associate_public_ip_address = false
+  tags = {
+    Name = "${local.name_prefix}-bastion"
+    Role = "ssm-bastion"
+  }
+  user_data = <<-EOF
+              #!/bin/bash
+              systemctl enable amazon-ssm-agent || true
+              systemctl start amazon-ssm-agent || true
+              EOF
+}
