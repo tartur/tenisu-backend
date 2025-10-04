@@ -23,7 +23,7 @@ From Actions tab run `Terraform - plan & apply` (workflow_dispatch) selecting th
 The connection is done through a bastion host.
 
 * Please install AWS SSM plugin for your machine https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html
-* run `infra/connect-to-rds.sh`
+* run `./scripts/connect-to-rds.sh`
 * you can connect your favorite database client to `localhost:15432`
 
 

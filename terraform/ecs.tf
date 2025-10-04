@@ -87,7 +87,8 @@ resource "aws_ecs_task_definition" "app" {
         }
       ]
       environment = [
-        { name = "ENV", value = var.environment }
+        { name = "ENV", value = var.environment },
+        { name = "SPRING_PROFILES_ACTIVE", value = var.environment }
       ]
       secrets = [
         { name = "DB_HOST", valueFrom = "${aws_secretsmanager_secret.db.arn}:host::" },
