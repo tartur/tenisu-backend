@@ -1,0 +1,26 @@
+{
+  "realm": "tenisu",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "tenisu-backend-local",
+      "name": "Tenisu API",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "secret": "tenisu-backend-local",
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "attributes": { "oauth2.device.authorization.grant.enabled": "false" },
+      "defaultClientScopes": ["web-origins", "roles"],
+      "optionalClientScopes": ["tenisu-api/read", "tenisu-api/write"]
+    }
+  ],
+  "clientScopes": [
+    { "name": "tenisu-api/read",  "protocol": "openid-connect" },
+    { "name": "tenisu-api/write", "protocol": "openid-connect" }
+  ],
+  "scopeMappings": [],
+  "clientScopeMappings": {}
+}

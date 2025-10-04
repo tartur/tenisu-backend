@@ -1,0 +1,23 @@
+spring:
+  docker:
+    compose:
+      file: 'docker/compose.yaml'
+  # --- Security / OIDC config ---
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Local Keycloak for dev
+          issuer-uri: 'http://localhost:8081/realms/tenisu'
+
+management:
+  endpoints:
+    web:
+      base-path: '/'            # puts actuator under root
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never     # do not leak component details to the public
+      probes:
+        enabled: true

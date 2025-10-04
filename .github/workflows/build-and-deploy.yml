@@ -1,0 +1,68 @@
+name: Build, push image
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target env'
+        required: true
+        default: dev
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 21
+      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      - name: Build & Test
+        run: ./gradlew clean test bootJar
+
+      - name: Upload HTML test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-html-report
+          path: build/reports/tests/test
+
+      - name: Build Docker image
+        run: docker build -f docker/Dockerfile -t myapp:latest .
+
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+      - name: Build and push image
+        env:
+          IMAGE_TAG: dev
+        run: |
+          docker build -f docker/Dockerfile -t tenisu-backend:${IMAGE_TAG} .
+          docker tag tenisu-backend:${IMAGE_TAG} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/tenisu-backend:latest
+          docker tag tenisu-backend:${IMAGE_TAG} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/tenisu-backend:${IMAGE_TAG}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/tenisu-backend:${IMAGE_TAG}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/tenisu-backend:latest
+
+      - name: Force ECS redeploy
+        run: |
+          aws ecs update-service --cluster tenisu-backend-dev --service tenisu-backend-dev-service --force-new-deployment --region ${{ secrets.AWS_REGION }}

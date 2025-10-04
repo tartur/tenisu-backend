@@ -1,0 +1,19 @@
+### Get token via OAUTH2 (client credentials compatible with cognito & KC)
+POST {{auth_server_url}}
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic {{client_basic_auth}}
+
+grant_type=client_credentials&scope=tenisu-api/read%20tenisu-api/write
+
+> {%client.global.set("auth", response.body); %}
+
+
+### Health request
+GET {{base_url}}/health
+
+
+### Find all players
+GET {{base_url}}/players
+Authorization: Bearer {{auth.access_token}}
+
+###
