@@ -98,7 +98,8 @@ resource "aws_ecs_task_definition" "app" {
       ]
       environment = [
         { name = "ENV", value = var.environment },
-        { name = "SPRING_PROFILES_ACTIVE", value = var.environment }
+        { name = "SPRING_PROFILES_ACTIVE", value = var.environment },
+        { name = "COGNITO_ISSUER_URI", value = "https://cognito-idp.${var.aws_region}.amazonaws.com/${aws_cognito_user_pool.users.id}" },
       ]
       secrets = [
         { name = "DB_HOST", valueFrom = "${aws_secretsmanager_secret.db.arn}:host::" },

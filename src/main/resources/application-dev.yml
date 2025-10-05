@@ -4,21 +4,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          # Local Keycloak for dev
-          issuer-uri: ${OIDC_ISSUER_URI:http://localhost:8081/realms/master}
-
-      client:
-        registration:
-          cognito:
-            client-id: ${COGNITO_CLIENT_ID:dummy}
-            client-secret: ${COGNITO_CLIENT_SECRET:dummy}
-            provider: cognito
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-
-        provider:
-          cognito:
-            issuer-uri: ${COGNITO_ISSUER_URI:https://cognito-idp.eu-west-3.amazonaws.com/${COGNITO_POOL_ID}}
+          issuer-uri: ${COGNITO_ISSUER_URI}
 
 
 management:
