@@ -1,4 +1,4 @@
-package com.t2.screening.tenisu.service;
+package com.t2.screening.tenisu.domain.exception;
 
 public class PlayerNotFoundException extends RuntimeException {
     public PlayerNotFoundException() {

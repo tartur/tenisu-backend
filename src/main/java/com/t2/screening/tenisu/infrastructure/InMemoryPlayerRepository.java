@@ -1,11 +1,12 @@
-package com.t2.screening.tenisu.adapter.persistence;
+package com.t2.screening.tenisu.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t2.screening.tenisu.model.Player;
-import com.t2.screening.tenisu.service.PlayerRepository;
+import com.t2.screening.tenisu.domain.model.Player;
+import com.t2.screening.tenisu.domain.repository.PlayerRepository;
 import lombok.Data;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Repository
 public class InMemoryPlayerRepository implements PlayerRepository {
     private final List<Player> players = new ArrayList<>();
 
@@ -32,6 +32,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
         }
     }
 
+    @Nonnull
     @Override
     public List<Player> findAll() {
         return Collections.unmodifiableList(players);

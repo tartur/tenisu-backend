@@ -1,28 +1,27 @@
-package com.t2.screening.tenisu.adapter.controller;
+package com.t2.screening.tenisu.ui.rest;
 
-import com.t2.screening.tenisu.model.Player;
-import com.t2.screening.tenisu.service.PlayerFinderService;
+import com.t2.screening.tenisu.ui.rest.dto.AllPlayers;
+import com.t2.screening.tenisu.domain.model.Player;
+import com.t2.screening.tenisu.application.FindPlayersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
-    private final PlayerFinderService playerFinderService;
+    private final FindPlayersService findPlayersService;
 
     @GetMapping
-    public List<Player> getAllPlayers() {
-        return playerFinderService.findAllSorted();
+    public AllPlayers getAllPlayers() {
+        return new AllPlayers(findPlayersService.findAllSorted());
     }
 
     @GetMapping("/{id}")
     public Player getPlayer(@PathVariable("id") Long id) {
-        return playerFinderService.findById(id);
+        return findPlayersService.findById(id);
     }
 }

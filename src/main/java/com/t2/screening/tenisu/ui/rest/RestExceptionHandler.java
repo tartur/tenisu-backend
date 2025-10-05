@@ -1,6 +1,6 @@
-package com.t2.screening.tenisu.adapter.controller;
+package com.t2.screening.tenisu.ui.rest;
 
-import com.t2.screening.tenisu.service.PlayerNotFoundException;
+import com.t2.screening.tenisu.domain.exception.PlayerNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,7 +1,9 @@
-package com.t2.screening.tenisu.service;
+package com.t2.screening.tenisu.application;
 
-import com.t2.screening.tenisu.model.Player;
-import com.t2.screening.tenisu.model.PlayerData;
+import com.t2.screening.tenisu.domain.exception.PlayerNotFoundException;
+import com.t2.screening.tenisu.domain.model.Player;
+import com.t2.screening.tenisu.domain.model.PlayerData;
+import com.t2.screening.tenisu.domain.repository.PlayerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,11 +19,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PlayerFinderServiceTest {
+class FindPlayersServiceTest {
     @Mock
     private PlayerRepository playerRepository;
     @InjectMocks
-    private PlayerFinderService playerFinderService;
+    private FindPlayersService findPlayersService;
 
     @Test
     void when_findAll_Sorted_thenReturn_all_players_sorted_by_rank() {
@@ -31,7 +33,7 @@ class PlayerFinderServiceTest {
                 Player.builder().id(3L).data(PlayerData.builder().rank(2).build()).build()
         ));
 
-        List<Player> players = playerFinderService.findAllSorted();
+        List<Player> players = findPlayersService.findAllSorted();
 
         assertThat(players).hasSize(3).map(Player::getId).containsSequence(3L, 1L, 2L);
     }
@@ -42,7 +44,7 @@ class PlayerFinderServiceTest {
                 of(Player.builder().id(1L).data(PlayerData.builder().rank(30).build()).build())
         );
 
-        assertThat(playerFinderService.findById(1L)).isNotNull();
+        assertThat(findPlayersService.findById(1L)).isNotNull();
     }
 
     @Test
@@ -50,6 +52,6 @@ class PlayerFinderServiceTest {
         when(playerRepository.findById(1L)).thenReturn(Optional.empty());
 
 
-        assertThatThrownBy(() -> playerFinderService.findById(1L)).isInstanceOf(PlayerNotFoundException.class);
+        assertThatThrownBy(() -> findPlayersService.findById(1L)).isInstanceOf(PlayerNotFoundException.class);
     }
 }

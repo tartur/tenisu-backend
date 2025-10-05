@@ -5,7 +5,7 @@
       "firstname": "Novak",
       "lastname": "Djokovic",
       "shortname": "N.DJO",
-      "sex": "M",
+      "sex": "MALE",
       "country": {
         "picture": "https://tenisu.latelier.co/resources/Serbie.png",
         "code": "SRB"
@@ -25,7 +25,7 @@
       "firstname": "Venus",
       "lastname": "Williams",
       "shortname": "V.WIL",
-      "sex": "F",
+      "sex": "FEMALE",
       "country": {
         "picture": "https://tenisu.latelier.co/resources/USA.png",
         "code": "USA"
@@ -45,7 +45,7 @@
       "firstname": "Stan",
       "lastname": "Wawrinka",
       "shortname": "S.WAW",
-      "sex": "M",
+      "sex": "MALE",
       "country": {
         "picture": "https://tenisu.latelier.co/resources/Suisse.png",
         "code": "SUI"
@@ -65,7 +65,7 @@
       "firstname": "Serena",
       "lastname": "Williams",
       "shortname": "S.WIL",
-      "sex": "F",
+      "sex": "FEMALE",
       "country": {
         "picture": "https://tenisu.latelier.co/resources/USA.png",
         "code": "USA"
@@ -85,7 +85,7 @@
       "firstname": "Rafael",
       "lastname": "Nadal",
       "shortname": "R.NAD",
-      "sex": "M",
+      "sex": "MALE",
       "country": {
         "picture": "https://tenisu.latelier.co/resources/Espagne.png",
         "code": "ESP"

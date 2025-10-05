@@ -1,4 +1,4 @@
-package com.t2.screening.tenisu.model;
+package com.t2.screening.tenisu.domain.model;
 
 public enum Sex {
     /**
