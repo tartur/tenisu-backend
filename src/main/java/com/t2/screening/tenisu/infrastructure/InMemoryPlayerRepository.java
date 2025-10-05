@@ -3,8 +3,7 @@ package com.t2.screening.tenisu.infrastructure;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.t2.screening.tenisu.domain.model.Player;
 import com.t2.screening.tenisu.domain.repository.PlayerRepository;
-import lombok.Data;
-import org.springframework.stereotype.Repository;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -14,20 +13,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 public class InMemoryPlayerRepository implements PlayerRepository {
+    public static final String PLAYERS_JSON = "players.json";
     private final List<Player> players = new ArrayList<>();
 
-    @Data
-    private static class Players {
-        private List<Player> players;
+    private record Players(List<Player> players) {
     }
 
     public InMemoryPlayerRepository(ObjectMapper objectMapper) {
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("players.json");) {
+        log.info("Loading players from JSON file {}", PLAYERS_JSON);
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(PLAYERS_JSON);) {
             Players container = objectMapper.readValue(is, Players.class);
-            players.addAll(container.getPlayers());
+            players.addAll(container.players());
+            log.info("{} players loaded", players.size());
         } catch (IOException e) {
+            log.error("Failed to load players from JSON file {}", PLAYERS_JSON);
             throw new RuntimeException(e);
         }
     }

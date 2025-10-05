@@ -27,7 +27,11 @@ GET {{base_url}}/players
 Authorization: Bearer {{auth.access_token}}
 
 ### Find one player
-GET {{base_url}}/players/1
+GET {{base_url}}/players/17
+Authorization: Bearer {{auth.access_token}}
+
+### Find statistics
+GET {{base_url}}/statistics
 Authorization: Bearer {{auth.access_token}}
 
 ###

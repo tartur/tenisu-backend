@@ -33,7 +33,7 @@ class FindPlayersServiceTest {
                 Player.builder().id(3L).data(PlayerData.builder().rank(2).build()).build()
         ));
 
-        List<Player> players = findPlayersService.findAllSorted();
+        List<Player> players = findPlayersService.findAllSortedByRank();
 
         assertThat(players).hasSize(3).map(Player::getId).containsSequence(3L, 1L, 2L);
     }

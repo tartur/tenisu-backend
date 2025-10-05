@@ -17,7 +17,7 @@ public class PlayerController {
 
     @GetMapping
     public AllPlayers getAllPlayers() {
-        return new AllPlayers(findPlayersService.findAllSorted());
+        return new AllPlayers(findPlayersService.findAllSortedByRank());
     }
 
     @GetMapping("/{id}")
