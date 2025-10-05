@@ -1,4 +1,4 @@
-package com.t2.screening.tenisu.config;
+package com.t2.screening.tenisu.adapter.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

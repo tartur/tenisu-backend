@@ -10,9 +10,11 @@ grant_type=client_credentials&scope=tenisu-api/read%20tenisu-api/write
 
 ### Info request
 GET {{base_url}}/info
+Authorization: Bearer {{auth.access_token}}
 
 ### Health request
 GET {{base_url}}/health
+Authorization: Bearer {{auth.access_token}}
 
 ### Environment request
 GET {{base_url}}/env
@@ -22,6 +24,10 @@ GET {{base_url}}/configprops
 
 ### Find all players
 GET {{base_url}}/players
+Authorization: Bearer {{auth.access_token}}
+
+### Find one player
+GET {{base_url}}/players/1
 Authorization: Bearer {{auth.access_token}}
 
 ###

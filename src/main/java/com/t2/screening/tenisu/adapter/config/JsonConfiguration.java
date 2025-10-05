@@ -1,4 +1,4 @@
-package com.t2.screening.tenisu.config;
+package com.t2.screening.tenisu.adapter.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;

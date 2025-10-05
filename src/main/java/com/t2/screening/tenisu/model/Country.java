@@ -1,4 +1,4 @@
-package com.t2.screening.tenisu.domain.model;
+package com.t2.screening.tenisu.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

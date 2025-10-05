@@ -1,7 +1,6 @@
 package com.t2.screening.tenisu.service;
 
-import com.t2.screening.tenisu.domain.model.Player;
-import com.t2.screening.tenisu.domain.repository.PlayerRepository;
+import com.t2.screening.tenisu.model.Player;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +16,9 @@ public class PlayerFinderService {
         return playerRepository.findAll().stream()
                 .sorted(Comparator.comparingInt(p -> p.getData().getRank()))
                 .toList();
+    }
+
+    public Player findById(Long id) {
+        return playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
     }
 }

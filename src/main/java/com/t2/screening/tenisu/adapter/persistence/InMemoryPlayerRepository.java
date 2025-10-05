@@ -1,8 +1,8 @@
-package com.t2.screening.tenisu.infrastructure.persistence;
+package com.t2.screening.tenisu.adapter.persistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t2.screening.tenisu.domain.model.Player;
-import com.t2.screening.tenisu.domain.repository.PlayerRepository;
+import com.t2.screening.tenisu.model.Player;
+import com.t2.screening.tenisu.service.PlayerRepository;
 import lombok.Data;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -34,5 +35,10 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     @Override
     public List<Player> findAll() {
         return Collections.unmodifiableList(players);
+    }
+
+    @Override
+    public Optional<Player> findById(Long id) {
+        return players.stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 }
