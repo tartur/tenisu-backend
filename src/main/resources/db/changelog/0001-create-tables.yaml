@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0001-create-countries
+      author: tartur
+      changes:
+        - createTable:
+            tableName: countries
+            columns:
+              - column: { name: code, type: varchar(3), constraints: { primaryKey: true, nullable: false } }
+              - column: { name: picture_url, type: varchar(512) }
+
+  - changeSet:
+      id: 0002-create-players
+      author: tartur
+      changes:
+        - createTable:
+            tableName: players
+            columns:
+              # identity for auto-generated IDs at runtime
+              - column: { name: id, type: serial, constraints: { primaryKey: true } }
+              - column: { name: firstname, type: varchar(100), constraints: { nullable: false } }
+              - column: { name: lastname, type: varchar(100), constraints: { nullable: false } }
+              - column: { name: sex, type: varchar(100), constraints: { nullable: false } }
+              - column: { name: country_code, type: varchar(3), constraints: { nullable: false } }
+              - column: { name: picture_url, type: varchar(512) }
+        - addForeignKeyConstraint:
+            baseTableName: players
+            baseColumnNames: country_code
+            referencedTableName: countries
+            referencedColumnNames: code
+            constraintName: fk_players_country
+        - createIndex:
+            tableName: players
+            indexName: idx_players_country
+            columns:
+              - column: { name: country_code }
+
+  - changeSet:
+      id: 0003-create-player-data
+      author: tartur
+      changes:
+        - createTable:
+            tableName: player_data
+            columns:
+              - column: { name: player_id, type: int, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: rank, type: int, constraints: { nullable: false } }
+              - column: { name: points, type: int, constraints: { nullable: false } }
+              - column: { name: weight_grams, type: int }
+              - column: { name: height_cm, type: int }
+              - column: { name: age, type: int }
+              - column: { name: last_results, type: 'smallint[]' }
+        - addForeignKeyConstraint:
+            baseTableName: player_data
+            baseColumnNames: player_id
+            referencedTableName: players
+            referencedColumnNames: id
+            constraintName: fk_data_player

@@ -1,14 +1,15 @@
 package com.t2.screening.tenisu.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.t2.screening.tenisu.application.CreatePlayerService;
 import com.t2.screening.tenisu.application.FindCountriesService;
 import com.t2.screening.tenisu.application.FindPlayersService;
 import com.t2.screening.tenisu.application.GetStatisticsService;
 import com.t2.screening.tenisu.domain.repository.CountryRepository;
 import com.t2.screening.tenisu.domain.repository.PlayerRepository;
-import com.t2.screening.tenisu.infrastructure.InMemoryCountryRepository;
-import com.t2.screening.tenisu.infrastructure.InMemoryPlayerRepository;
+import com.t2.screening.tenisu.infrastructure.mybatis.CountryMapper;
+import com.t2.screening.tenisu.infrastructure.mybatis.MybatisCountryRepository;
+import com.t2.screening.tenisu.infrastructure.mybatis.MybatisPlayerRepository;
+import com.t2.screening.tenisu.infrastructure.mybatis.PlayerMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,13 +17,15 @@ import org.springframework.context.annotation.Configuration;
 class BeanConfiguration {
 
     @Bean
-    PlayerRepository playerRepository(ObjectMapper objectMapper) {
-        return new InMemoryPlayerRepository(objectMapper);
+    PlayerRepository playerRepository(PlayerMapper playerMapper) {
+        //return new InMemoryPlayerRepository(objectMapper);
+        return new MybatisPlayerRepository(playerMapper);
     }
 
     @Bean
-    CountryRepository countryRepository(ObjectMapper objectMapper) {
-        return new InMemoryCountryRepository(objectMapper, "countries.json");
+    CountryRepository countryRepository(CountryMapper countryMapper) {
+        //return new InMemoryCountryRepository(objectMapper, "countries.json");
+        return new MybatisCountryRepository(countryMapper);
     }
 
     @Bean

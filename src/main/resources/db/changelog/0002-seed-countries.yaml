@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0005-seed-countries
+      author: tartur
+      changes:
+        - loadData:
+            tableName: countries
+            file: classpath:db/data/countries.csv
+            separator: ","
+            quotchar: '"'
+            columns:
+              - column:
+                  name: code
+                  type: STRING
+              - column:
+                  name: picture_url
+                  type: STRING

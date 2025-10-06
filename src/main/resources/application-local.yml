@@ -10,6 +10,28 @@ spring:
           # Local Keycloak for dev
           issuer-uri: 'http://localhost:8081/realms/tenisu'
 
+  # --- Database config ---
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tenisu?currentSchema=app
+    username: postgres
+    password: secret
+    hikari:
+      schema: app # local schema because KC is using public schema
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-main.yaml
+    default-schema: app # local schema because KC is using public schema
+    enabled: true
+
+mybatis:
+  mapper-locations: classpath*:mybatis/mappers/*Mapper.xml
+  type-aliases-package: com.t2.screening.tenisu.domain
+  type-handlers-package: com.t2.screening.tenisu.infrastructure.mybatis.typehandler
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    use-generated-keys: true
+    auto-mapping-behavior: full
+
 management:
   endpoints:
     web:

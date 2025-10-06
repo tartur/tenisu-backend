@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0006-seed-players
+      author: tartur
+      changes:
+        - loadData:
+            tableName: players
+            file: classpath:db/data/players.csv
+            columns:
+              - column:
+                  name: id
+                  type: NUMERIC
+              - column:
+                  name: firstname
+                  type: STRING
+              - column:
+                  name: lastname
+                  type: STRING
+              - column:
+                  name: sex
+                  type: STRING
+              - column:
+                  name: country_code
+                  type: STRING
+              - column:
+                  name: picture_url
+                  type: STRING
+
+  # Seed player_data including the last_results array
+  - changeSet:
+      id: 0007-seed-player-data
+      author: tartur
+      changes:
+        - sqlFile:
+            encoding: utf8
+            relativeToChangelogFile: false
+            path: db/data/player_data.sql
+            splitStatements: true
+            endDelimiter: ;
+
+  # Align the sequence to max seeded ID to preserve auto-generation for future inserts
+  - changeSet:
+      id: 0008-fix-players-seq
+      author: tartur
+      dbms: postgresql
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              DO $do$
+              DECLARE v_max INTEGER;
+              BEGIN
+                SELECT COALESCE(MAX(id), 0) INTO v_max FROM players;
+                IF EXISTS (
+                  SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+                  WHERE c.relkind='S' AND c.relname='players_id_seq'
+                ) THEN
+                  PERFORM setval('players_id_seq', GREATEST(v_max, 1));
+                END IF;
+              END $do$;

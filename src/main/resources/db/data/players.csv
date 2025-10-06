@@ -1,0 +1,6 @@
+id,firstname,lastname,sex,country_code,picture_url
+52,Novak,Djokovic,MALE,SRB,https://tenisu.latelier.co/resources/Djokovic.png
+95,Venus,Williams,FEMALE,USA,https://tenisu.latelier.co/resources/Venus.webp
+65,Stan,Wawrinka,MALE,SUI,https://tenisu.latelier.co/resources/Wawrinka.png
+102,Serena,Williams,FEMALE,USA,https://tenisu.latelier.co/resources/Serena.png
+17,Rafael,Nadal,MALE,ESP,https://tenisu.latelier.co/resources/Nadal.png

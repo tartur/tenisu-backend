@@ -1,11 +1,5 @@
 name: tenisu-backend
 services:
-  ###
-  #   1.	Starts Keycloak locally on http://localhost:8081.
-  #	2.	Admin console available at http://localhost:8081/ (username: admin, password: admin).
-  #	3.	You can create a realm, client, and users to match your Cognito setup.
-  #	•	Example: realm dev, client myapp, redirect URIs http://localhost:3000/* for local app testing
-  ###
   keycloak:
     image: quay.io/keycloak/keycloak:21.1.1
     container_name: tenisu-keycloak
@@ -34,9 +28,10 @@ services:
       - 'POSTGRES_PASSWORD=secret'
       - 'POSTGRES_USER=postgres'
     ports:
-      - '5432'
+      - "5432:5432"
     volumes:
       - kc_pg_data:/var/lib/postgresql/data
+      - ./postgres/init/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
 
 
 volumes:

@@ -1,4 +1,4 @@
-package com.t2.screening.tenisu.infrastructure;
+package com.t2.screening.tenisu.infrastructure.inmemory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.t2.screening.tenisu.domain.model.Country;

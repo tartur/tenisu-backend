@@ -7,12 +7,14 @@ import com.t2.screening.tenisu.domain.repository.CountryRepository;
 import com.t2.screening.tenisu.domain.repository.PlayerRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class CreatePlayerService {
     private final PlayerRepository playerRepository;
     private final CountryRepository countryRepository;
 
+    @Transactional
     public Player create(Player player) {
         Country refCountry = countryRepository.findByCode(player.getCountry().getCode())
                 .orElseThrow(() -> new CountryNotFoundException("Country not found"));

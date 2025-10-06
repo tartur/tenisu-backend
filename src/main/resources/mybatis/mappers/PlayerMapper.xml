@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.t2.screening.tenisu.infrastructure.mybatis.PlayerMapper">
+
+    <resultMap id="PlayerDataMap" type="com.t2.screening.tenisu.domain.model.PlayerData">
+        <result column="weight_grams" property="weight" />
+        <result column="height_cm" property="height" />
+        <result column="last_results" property="last" typeHandler="com.t2.screening.tenisu.infrastructure.mybatis.typehandler.IntArrayTypeHandler" />
+    </resultMap>
+
+    <resultMap id="PlayerMap" type="com.t2.screening.tenisu.domain.model.Player">
+        <association property="data" resultMap="PlayerDataMap" />
+        <association property="country" javaType="com.t2.screening.tenisu.domain.model.Country">
+            <result column="country_code" property="code" />
+            <result column="country_picture_url" property="picture" />
+        </association>
+    </resultMap>
+
+    <sql id="PlayerColumns">
+        p.id,
+        p.firstname,
+        p.lastname,
+        p.sex,
+        p.picture_url,
+        p.country_code,
+        d.rank,
+        d.points,
+        d.weight_grams,
+        d.height_cm,
+        d.age,
+        d.last_results,
+        c.picture_url AS country_picture_url
+    </sql>
+
+    <select id="findById" parameterType="long" resultMap="PlayerMap">
+        SELECT <include refid="PlayerColumns"/>
+        FROM players p
+        LEFT JOIN player_data d ON d.player_id = p.id
+        LEFT JOIN countries c ON c.code = p.country_code
+        WHERE p.id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="PlayerMap">
+        SELECT <include refid="PlayerColumns"/>
+        FROM players p
+        LEFT JOIN player_data d ON d.player_id = p.id
+        LEFT JOIN countries c ON c.code = p.country_code
+        ORDER BY p.id
+    </select>
+
+    <insert id="insertPlayer" parameterType="com.t2.screening.tenisu.domain.model.Player"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO players(firstname, lastname, sex, country_code, picture_url)
+        VALUES(#{firstname}, #{lastname}, #{sex}, #{country.code}, #{picture})
+    </insert>
+
+    <insert id="insertPlayerData">
+        INSERT INTO player_data(player_id, rank, points, weight_grams, height_cm, age, last_results)
+        VALUES(
+                  #{id},
+                  #{data.rank}, #{data.points}, #{data.weight}, #{data.height}, #{data.age},
+                  #{data.last, typeHandler=com.t2.screening.tenisu.infrastructure.mybatis.typehandler.IntArrayTypeHandler}
+              )
+    </insert>
+</mapper>
