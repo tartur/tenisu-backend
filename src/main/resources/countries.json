@@ -1,0 +1,28 @@
+{
+  "countries": [
+    {
+      "picture": "https://tenisu.latelier.co/resources/Serbie.png",
+      "code": "SRB"
+    },
+    {
+      "picture": "https://tenisu.latelier.co/resources/USA.png",
+      "code": "USA"
+    },
+    {
+      "picture": "https://tenisu.latelier.co/resources/Suisse.png",
+      "code": "SUI"
+    },
+    {
+      "picture": "https://tenisu.latelier.co/resources/Espagne.png",
+      "code": "ESP"
+    },
+    {
+      "picture": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg",
+      "code": "FRA"
+    },
+    {
+      "picture": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg",
+      "code": "TUN"
+    }
+  ]
+}

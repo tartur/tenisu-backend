@@ -23,7 +23,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     public InMemoryPlayerRepository(ObjectMapper objectMapper) {
         log.info("Loading players from JSON file {}", PLAYERS_JSON);
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream(PLAYERS_JSON);) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(PLAYERS_JSON)) {
             Players container = objectMapper.readValue(is, Players.class);
             players.addAll(container.players());
             log.info("{} players loaded", players.size());
@@ -42,5 +42,17 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     @Override
     public Optional<Player> findById(Long id) {
         return players.stream().filter(p -> p.getId().equals(id)).findFirst();
+    }
+
+    @Override
+    public Player save(Player player) {
+        long id = nextId();
+        player.setId(id);
+        players.add(player);
+        return player;
+    }
+
+    private long nextId() {
+        return players.stream().mapToLong(Player::getId).max().orElse(0) + 1;
     }
 }

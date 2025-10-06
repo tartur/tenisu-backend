@@ -24,5 +24,9 @@ public class PlayerData {
      */
     private int weight;
     private int age;
+    /**
+     * last 5 matches results as binary 0/1 integers.
+     * 1 for win and 0 for loss.
+     */
     private int[] last;
 }
