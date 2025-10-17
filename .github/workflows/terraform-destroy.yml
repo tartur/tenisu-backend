@@ -1,0 +1,47 @@
+name: Terraform - destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target env'
+        required: true
+        default: dev
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: |
+          terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" -backend-config="region=${{ secrets.AWS_REGION }}" -backend-config="key=infra/${{ github.event.inputs.environment }}/terraform.tfstate" -input=false
+
+      - name: Terraform Plan Destruction
+        working-directory: terraform
+        run: |
+          terraform plan -destroy -var="environment=${{ github.event.inputs.environment }}" \
+          -var="tf_state_bucket=${{ secrets.TF_STATE_BUCKET }}" \
+          -var="domain=${{ github.event.inputs.environment }}-api.tenisu.turki4.net" -out=tfdestroyplan
+
+      - name: Terraform Destroy
+        working-directory: terraform
+        run: |
+          terraform apply -var="environment=${{ github.event.inputs.environment }}" \
+          -var="tf_state_bucket=${{ secrets.TF_STATE_BUCKET }}" \
+          -var="domain=${{ github.event.inputs.environment }}-api.tenisu.turki4.net" -input=false tfdestroyplan

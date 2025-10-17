@@ -69,6 +69,44 @@ resource "aws_cognito_user_pool_client" "app_client" {
   supported_identity_providers = ["COGNITO"]
 }
 
+resource "aws_cognito_user_pool_client" "public_front_client" {
+  name            = "${local.name_prefix}-front-client"
+  user_pool_id    = aws_cognito_user_pool.users.id
+  generate_secret = false
+
+  # Flows autorisés pour un front web
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows = ["code"]  # PKCE flow
+
+  # Scopes d'autorisation
+  allowed_oauth_scopes = [
+    "openid",
+    "email",
+    "profile",
+    "${aws_cognito_resource_server.api.identifier}/read",
+    "${aws_cognito_resource_server.api.identifier}/write",
+  ]
+
+  supported_identity_providers = ["COGNITO"]
+
+  # URLs de redirection
+  callback_urls = [
+    "http://localhost:3000/auth/callback", # ton front CloudFront
+  ]
+  logout_urls = [
+    "https://example.com/",
+  ]
+
+  access_token_validity  = 60
+  id_token_validity      = 60
+  refresh_token_validity = 30
+  token_validity_units {
+    access_token  = "minutes"
+    id_token      = "minutes"
+    refresh_token = "days"
+  }
+}
+
 resource "aws_cognito_user_pool_domain" "domain" {
   domain       = local.name_prefix
   user_pool_id = aws_cognito_user_pool.users.id
